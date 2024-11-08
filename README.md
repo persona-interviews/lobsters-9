@@ -1,10 +1,6 @@
 ### Lobsters Rails Project [![build status](https://github.com/lobsters/lobsters/actions/workflows/check.yml/badge.svg)](https://github.com/lobsters/lobsters/actions/workflows/check.yml)
 
-This is the
-[quite sad](https://web.archive.org/web/20230213161624/https://old.reddit.com/r/rails/comments/6jz7tq/source_code_lobsters_a_hacker_news_clone_built/)
-source code to the
-[ghost town](https://twitter.com/webshitweekly/status/1399935275057389571) at
-[https://lobste.rs](https://lobste.rs).
+This is a Hacker News clone used at [https://lobste.rs](https://lobste.rs).
 It is a Rails codebase and uses a SQL (MariaDB in production) backend for the database.
 
 You are free to use this code to start your own [sister site](https://github.com/lobsters/lobsters/wiki)
@@ -22,41 +18,41 @@ If you have questions, there is usually someone in [our chat room](https://lobst
 
 #### Development setup
 
-Use the steps below for a local install or
+Use the steps below to setup development or use
 [lobsters-ansible](https://github.com/lobsters/lobsters-ansible) for our production deployment config.
 There's an external project [docker-lobsters](https://github.com/utensils/docker-lobsters) if you want to use Docker.
 
+* Create a Github Codespace by changing the `.com` in the URL to `.dev`. New URL will be `https://github.dev/persona-id/lobsters`
+    * Click the green button at the bottom labeled "Continue Working in Github Codespaces"
+    * Select "2 cores..." at the top
+
 * Install and start MariaDB.
-  On Linux use [your package manager](https://mariadb.com/kb/en/distributions-which-include-mariadb/).
-  On MacOS you can [install with brew](https://mariadb.com/kb/en/installing-mariadb-on-macos-using-homebrew/).
-  On Windows there's an [installer](https://mariadb.org/download/?t=mariadb&p=mariadb&r=11.5.2&os=Linux&cpu=x86_64&pkg=tar_gz&i=systemd&mirror=starburst_stlouis).
+    ```
+    $ sudo apt-get update
+    $ sudo apt-get install mariadb-server
+    ```
 
-* Start the mariadb server using one of the [methods mentioned in the mariadb knowledge base](https://mariadb.com/kb/en/starting-and-stopping-mariadb-automatically/).
+* Start the mariadb server
+    ```
+    $ sudo service mysql start
+    ```
 
-* Open the console using `mariadb`, and set the `root` user password (type `ctrl-d` to exit afterwards)
-
-```sql
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'localdev';
-```
+* Open the console using `sudo mysql -u root`, and set the `root` user password (type `ctrl-d` to exit afterwards)
+    ```sql
+    ALTER USER 'root'@'localhost' IDENTIFIED BY 'localdev';
+    ```
 
 * Install the Ruby version specified in [.ruby-version](https://github.com/lobsters/lobsters/blob/master/.ruby-version)
-
-* Checkout the lobsters git tree from Github
-    ```sh
-    $ git clone git@github.com:lobsters/lobsters.git
-    $ cd lobsters
-    lobsters$
+    ```
+    lobsters$ rvm install ruby 3.3.1
     ```
 
 * Install Nodejs, needed (or other execjs) for uglifier
     ```sh
-    Fedora: sudo yum install nodejs
-    Ubuntu: sudo apt-get install nodejs
-    OSX: brew install nodejs
+    $ sudo apt-get install nodejs
     ```
 
 * Run `bin/setup` to install dependencies and set up db
-
     ```sh
     lobsters$ bin/setup
     ```
@@ -66,14 +62,12 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'localdev';
   `domain` and `name`. (You don't need this on your dev machine).
 
 * On your personal computer, you probably want to add some sample data.
-
     ```sh
     lobsters$ rails fake_data
     ```
 
 * Run the Rails server in development mode.
   You should be able to login to `http://localhost:3000` with your new `test` user:
-
     ```sh
     lobsters$ rails server
     ```
@@ -83,15 +77,9 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'localdev';
   The lobsters-ansible repo has our config files to crib from. Some app-specific notes:
 
 * Set up crontab or another scheduler to run regular jobs:
-
     ```
     */5 * * * *  cd /path/to/lobsters && env RAILS_ENV=production sh -c 'bundle exec ruby script/mail_new_activity; bundle exec ruby script/mastodon_sync.rb; bundle exec ruby script/traffic_range'
     ```
-
-* See `config/initializers/production.rb.sample` for GitHub/Mastodon integration help.
-
-* You probably want to use [git-imerge](https://lobste.rs/s/dbm2d4) to pull in
-  changes from Lobsters to your site.
 
 #### Administration
 
