@@ -91,17 +91,11 @@ class FakeDataGenerator
         category: category,
         description: Faker::Lorem.sentence(word_count: Random.rand(2..15))[...100]
       )
-      url = Faker::Internet.url
-      description = nil
-      if i % 10 == 0
-        description = markdown_paragraphs
-        url = nil unless i % 7 == 0
-      end
       create_args = {
         user: user,
         title: title,
-        url: url,
-        description: description,
+        url: "",
+        description: markdown_paragraphs,
         tags_a: [tag.tag]
       }
       story = Story.create!(create_args)
@@ -124,11 +118,10 @@ class FakeDataGenerator
       tag_name = title.split(" ").first.downcase
       tag = Tag.find_by tag: tag_name
       tag ||= Tag.create! tag: tag_name, category: category
-      url = Faker::Internet.url
       create_args = {
         user: user,
         title: title,
-        url: url,
+        url: "",
         description: markdown_paragraphs,
         tags_a: [tag.tag],
         is_deleted: true,
