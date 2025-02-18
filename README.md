@@ -22,7 +22,7 @@ Use the steps below to setup development or use
 [lobsters-ansible](https://github.com/lobsters/lobsters-ansible) for our production deployment config.
 There's an external project [docker-lobsters](https://github.com/utensils/docker-lobsters) if you want to use Docker.
 
-* Create a Github Codespace by changing the `.com` in the URL to `.dev`. New URL will be `https://github.dev/persona-interviews/lobsters`
+* Create a Github Codespace by changing the `.com` in the URL to `.dev`. New URL will be `https://github.dev/persona-interviews/lobsters-[YOUR_GITHUB_HANDLE]`
     * Click the green button at the bottom labeled "Continue Working in Github Codespaces"
     * Select "2 cores..." at the top
 
