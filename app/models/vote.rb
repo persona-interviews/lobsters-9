@@ -37,9 +37,11 @@ class Vote < ApplicationRecord
 
   # don't forget to edit the explanations on /about
   STORY_REASONS = {
+    # PART 1:  Adding  new flag type here 
     "O" => "Off-topic",
     "A" => "Already Posted",
     "B" => "Broken Link",
+    "P" => "Promote",
     "S" => "Spam",
     "" => "Cancel"
   }.freeze

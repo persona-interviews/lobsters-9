@@ -64,6 +64,7 @@ class Story < ApplicationRecord
   scope :positive_ranked, -> { where("score >= 0") }
   scope :low_scoring, ->(max = 5) { where("score < ?", max) }
   scope :front_page, -> { hottest.limit(StoriesPaginator::STORIES_PER_PAGE) }
+
   scope :hottest, ->(user = nil, exclude_tags = nil) {
     base(user).not_hidden_by(user)
       .filter_tags(exclude_tags || [])

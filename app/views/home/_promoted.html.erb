@@ -1,0 +1,13 @@
+<%# locals: () -%>
+<h1>Promoted Stories</h1>
+<%= debug(@no_promoted_stories) %> 
+<% if @no_promoted_stories %>
+  <div class="no-promoted-stories">
+    <p>There are currently no promoted stories.</p>
+  </div>
+<% else %>
+  <p class="hint">
+   Stories that are promoted by an admin user. 
+  </p>
+  <%= render partial: "stories/list", locals: {stories: @stories} %>
+<% end %>

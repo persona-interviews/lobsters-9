@@ -9,13 +9,29 @@ class StoryRepository
   def categories(cats)
     tagged_story_ids = Tagging.select(:story_id).where(tag_id: Tag.where(category: cats).select(:id))
 
-    Story.base(@user).positive_ranked.where(id: tagged_story_ids).order(created_at: :desc)
+    Story.base(@user).positive_ranked.where(id: tagged_story_ids)
+      .left_joins(:votes)
+      .order(Arel.sql('CASE WHEN votes.reason = "P" THEN 0 ELSE 1 END'), created_at: :desc).order(created_at: :desc)
+  end
+
+  def promoted
+    stories = Story.base(@user).positive_ranked.not_hidden_by(@user)
+    stories = stories.filter_tags(@params[:exclude_tags] || [])
+  
+    # Prioritize promoted stories first (reason = 'P')
+    stories = stories
+      .left_joins(:votes)
+      .order(Arel.sql('CASE WHEN votes.reason = "P" THEN 0 ELSE 1 END'), "hotness DESC")
+  
+    stories
   end
 
   def hottest
     hottest = Story.base(@user).positive_ranked.not_hidden_by(@user)
     hottest = hottest.filter_tags(@params[:exclude_tags] || [])
-    hottest.order("hotness")
+
+    # Ordering hottest stories by promoted stories first
+    hottest = hottest.order("hotness DESC")
   end
 
   def hidden

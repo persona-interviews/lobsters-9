@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get "/newest/page/:page" => "home#newest"
   get "/recent" => "home#recent"
   get "/recent/page/:page" => "home#recent"
+  get '/promoted' => 'home#promoted', as: 'promoted'
   get "/hidden" => "home#hidden"
   get "/hidden/page/:page" => "home#hidden"
 

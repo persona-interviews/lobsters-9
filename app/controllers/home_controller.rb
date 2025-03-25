@@ -3,7 +3,7 @@
 class HomeController < ApplicationController
   include IntervalHelper
 
-  caches_page :active, :index, :newest, :newest_by_user, :recent, :top, if: CACHE_PAGE
+  caches_page :active, :index, :promoted,:newest, :newest_by_user, :recent, :top, if: CACHE_PAGE
 
   # for rss feeds, load the user's tag filters if a token is passed
   before_action :find_user_from_rss_token, only: [:index, :newest, :saved, :upvoted]
@@ -37,10 +37,13 @@ class HomeController < ApplicationController
   end
 
   def index
-    @stories, @show_more = get_from_cache(hottest: true) {
-      paginate stories.hottest
-    }
-
+    @promoted_stories, @promoted_show_more = get_from_cache(promoted: true) {
+      paginate stories.promoted
+     }
+    @stories, @show_more = get_from_cache(hottest: true) do
+      paginate stories.hottest  # Get hottest stories, excluding promoted ones
+    end
+  
     @rss_link ||= {
       title: "RSS 2.0",
       href: user_token_link("/rss")
@@ -325,6 +328,21 @@ class HomeController < ApplicationController
       }
       format.json { render json: @stories }
     end
+  end
+
+  # TASK 1: Promoted stories page
+  def promoted 
+    @stories, @show_more = get_from_cache(promoted: true) do
+      paginate Story.joins(:votes)
+                 .where(votes: {reason: 'P'})
+                 .distinct
+                 .includes(:votes, :suggested_taggings, :suggested_titles)
+    end
+    # If no promoted stories are found, set a flag to display a message in the view
+    @no_promoted_stories = @stories.empty?
+
+    @title = "Promoted Stories"
+    render action: "index"
   end
 
   private
