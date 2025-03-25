@@ -12,6 +12,18 @@ describe Vote do
     expect(v.errors[:vote]).to include("can't be blank")
   end
 
+  context "promote a story" do 
+    let(:u) { create(:user) }
+    let(:s) { create(:story) }
+
+    it "can flag 'Promote'" do 
+      Vote.vote_thusly_on_story_or_comment_for_user_because(-1, s.id, nil, u.id, "P")
+      s.reload
+      expect(s.score).to eq(1)
+      expect(s.flags).to eq(1)
+    end
+  end
+
   context "upvoting a story and flags" do
     # don't need to test short-circuit where vote is "changed" to what it already is
 
